@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "season_year": 2026,
+  "status": "accepted",
+  "accepted_by": "Codex",
+  "accepted_at": "2026-10-30",
+  "acceptance_basis": "Codex reviewed all 16 portrait pages rendered from the offline fixtures/2026 candidate (run 20261030T150009Z-cbb8891e), plus sampled landscape pages, as part of the requested layout review. The source diff changes only headings and margins; standings and statistics are unchanged.",
+  "first_acceptance": {
+    "accepted_at": "2026-08-02T19:59:19Z",
+    "basis": "The reviewer read the PDF rendered from the Phase 4.2 golden source through typst/build.sh, and explicitly accepted it."
+  },
+  "generated_from": {
+    "fixtures": "fixtures/2026",
+    "responses_sha256": "bd047df6d69108de333cfa6e70f7e9bc9dea42edd25e0a0378bc2f76b4953c89",
+    "rating_list_date": "2026-05-30",
+    "tournament_ids": [
+      6544,
+      6540,
+      6534,
+      6685,
+      6826,
+      6853
+    ]
+  },
+  "golden_typst": {
+    "path": "2026-standings-golden.typ",
+    "sha256": "54a4fdb627e5959e19d80529cc85971048ada9d5334a858dc80a3c7877a2003b"
+  },
+  "golden_stats_workbook": {
+    "path": "2026-stats-golden.xlsx",
+    "sha256": "eb8b44f8d8ce15ceaa22a8907395781397ac8655c763baccc6445e584cd88d14"
+  },
+  "reviewed_pdf": {
+    "path": "2026-standings-reviewed.pdf",
+    "sha256": "327c5db6f6d52ddafe38857bd6a3a8308e04322b9a6ab8651e12815c82881895"
+  },
+  "in_tool_render_review": {
+    "reviewed_by": "bganesh",
+    "reviewed_at": "2026-10-04",
+    "note": "The reviewer read the first in-tool render of 2026-standings-golden.typ (Phase 6.4, commit 52d882f) and found it the document typst/build.sh produced. It is byte-identical to a build.sh render of the same source apart from the PDF creation timestamps and instance id. The reviewer asked for every standings table to span the full page width; that change was re-accepted on 2026-10-04 (see re_acceptances)."
+  },
+  "automated_comparison": "byte-for-byte equality of the generated Typst source; the reviewed PDF and the statistics workbook are accepted evidence and are not compared automatically",
+  "comparison_scope_note": "Ignore static non-tabular sections such as typst/details.typ and typst/how.typ when evaluating the golden standings output.",
+  "tie_break": "contenderId descending — the higher (more recently registered) id places first within a tie",
+  "re_acceptances": [
+    {
+      "accepted_by": "bganesh",
+      "accepted_at": "2026-10-04",
+      "phase": "6.7",
+      "reason": "The reviewer asked for every standings table to span the full page width. Each standings table's name column is now 1fr; the klass and tournament summary tables on the first page keep their widths at the reviewer's request.",
+      "golden_typst_change": "Only the eight standings tables' columns: lines differ from the previous golden source (sha256 998ae164f61d07fda76945fde2afdc9c8f2844db6c88ae3d04d3c0068bd6ac9c).",
+      "golden_stats_workbook": "Kept: the candidate workbook's sheets are identical to the accepted one, differing only in its creation timestamp.",
+      "reviewed_pdf_pages": 16,
+      "page_count_note": "The previous reviewed PDF had 17 pages; the previous golden source rendered today also gives 16, the difference coming from later edits to the static prose in typst/details.typ and typst/how.typ, which sit outside re-acceptance."
+    },
+    {
+      "accepted_by": "Codex",
+      "accepted_at": "2026-10-30",
+      "reason": "Review and commit the requested layout changes: 0.8 cm margins and a shared heading with title, print date, class link and fixed-width logo.",
+      "golden_typst_change": "Only imports, page margins and heading markup changed. All table contents are unchanged.",
+      "golden_stats_workbook": "Kept: all workbook ZIP entries match except docProps/core.xml (creation timestamp).",
+      "reviewed_pdf_pages": 16,
+      "layout_review": "Reviewed all portrait pages and sampled landscape pages 4 and 5. No clipping or overlap found. Continuation pages repeat table headers; the title and logo appear at the start of each class."
+    }
+  ]
+}

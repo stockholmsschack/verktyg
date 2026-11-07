@@ -1,0 +1,106 @@
+revision = 9
+tournament_ids = [6544, 6540, 6534, 6685, 6826, 6853]
+landscape = false
+
+[contributor]
+name = "Ganesh Srinivasson"
+email = "bganesh@gmail.com"
+
+[club_display_names]
+"Kista SC KFUM Schacksektion" = "Kista SC KFUM"
+
+[finals_separators]
+
+[dispensation_dict]
+"516448" = 2009
+"541890" = 2009
+"546393" = 2009
+"570261" = 2010
+"577097" = 2010
+"590088" = 2010
+"594192" = 2011
+"609818" = 2011
+"612929" = 2012
+"642041" = 2011
+"664867" = 2015
+"690069" = 2015
+"715536" = 2015
+"726286" = 2009
+"727750" = 2012
+
+[dispensation_players."516448"]
+name = "Victor Lilliehöök"
+birth_year = 2012
+club = "Wasa SK"
+
+[dispensation_players."541890"]
+name = "Melvin Ral Lustig"
+birth_year = 2011
+club = "Kristallens SK"
+
+[dispensation_players."546393"]
+name = "Pratyush Tripathi"
+birth_year = 2010
+club = "SS 4 Springare"
+
+[dispensation_players."570261"]
+name = "Hugo Hardwick"
+birth_year = 2012
+club = "SS 4 Springare"
+
+[dispensation_players."577097"]
+name = "Rishi Viswanath"
+birth_year = 2011
+club = "Kristallens SK"
+
+[dispensation_players."590088"]
+name = "Ram Srinivasson"
+birth_year = 2012
+club = "Trojanska Hästen"
+
+[dispensation_players."594192"]
+name = "Dorian Göhlin Skoglund"
+birth_year = 2012
+club = "Kristallens SK"
+
+[dispensation_players."609818"]
+name = "Chale Zheng"
+birth_year = 2012
+club = "Trojanska Hästen"
+
+[dispensation_players."612929"]
+name = "Bruce Sun Åslund"
+birth_year = 2014
+club = "Wasa SK"
+
+[dispensation_players."642041"]
+name = "Sebastian Shi"
+birth_year = 2015
+club = "SK Rockaden Sthlm"
+
+[dispensation_players."664867"]
+name = "Samuel Najafi"
+birth_year = 2016
+club = "Wasa SK"
+
+[dispensation_players."690069"]
+name = "Manohar Venkata Ommi"
+birth_year = 2016
+club = "Farsta SK"
+
+[dispensation_players."715536"]
+name = "Saadhan Kowshik"
+birth_year = 2016
+club = "Kista SC KFUM Schacksektion"
+
+[dispensation_players."726286"]
+name = "Igor Markov"
+birth_year = 2011
+club = "SS Delectus"
+
+[dispensation_players."727750"]
+name = "Umair Islam"
+birth_year = 2015
+club = "Trojanska Hästen"
+
+[penalty_dict]

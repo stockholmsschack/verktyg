@@ -1,0 +1,132 @@
+<label class="form-label" for="tournament-search">
+    {{ t("tournament_search.label") }}
+</label>
+<input
+    class="form-control"
+    id="tournament-search"
+    type="search"
+    autocomplete="off"
+    placeholder="{{ t('tournament_search.placeholder') }}"
+    data-tournament-search-input
+>
+<div
+    class="form-text tournament-search-status"
+    role="status"
+    aria-live="polite"
+    data-search-state="idle"
+    data-tournament-search-status
+>{{ t("tournament_search.idle") }}</div>
+<ul
+    class="list-group mt-3"
+    aria-label="{{ t('tournament_search.results_label') }}"
+    data-tournament-search-results
+></ul>
+<form
+    class="row g-2 align-items-end mt-3"
+    data-tournament-id-form
+>
+    <div class="col-sm">
+        <label class="form-label" for="tournament-id">
+            {{ t("tournament_selection.paste_label") }}
+        </label>
+        <input
+            class="form-control"
+            id="tournament-id"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            data-tournament-id-input
+        >
+    </div>
+    <div class="col-sm-auto">
+        <button class="btn btn-outline-secondary" type="submit">
+            {{ t("tournament_selection.verify") }}
+        </button>
+    </div>
+</form>
+<div
+    class="form-text mt-3"
+    role="status"
+    aria-live="polite"
+    data-selection-state="idle"
+    data-tournament-selection
+></div>
+<div
+    class="toast-container position-fixed bottom-0 end-0 p-3"
+>
+    <div
+        class="toast border-0"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        data-tournament-selection-toast
+    >
+        <div class="d-flex">
+            <div
+                class="toast-body"
+                data-tournament-selection-toast-message
+            ></div>
+            <button
+                class="btn-close btn-close-white me-2 m-auto"
+                type="button"
+                data-bs-dismiss="toast"
+                aria-label="{{ t('tournament_selection.dismiss_notification') }}"
+            ></button>
+        </div>
+    </div>
+</div>
+<div
+    class="modal"
+    tabindex="-1"
+    aria-labelledby="tournament-removal-heading"
+    aria-describedby="tournament-removal-description"
+    data-tournament-removal-dialog
+>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2
+                    class="modal-title fs-5"
+                    id="tournament-removal-heading"
+                    data-tournament-removal-heading
+                >
+                    {{ t("tournament_selection.remove_heading") }}
+                </h2>
+                <button
+                    class="btn-close"
+                    type="button"
+                    data-bs-dismiss="modal"
+                    aria-label="{{ t('tournament_selection.cancel') }}"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <p
+                    id="tournament-removal-description"
+                    data-tournament-removal-description
+                >
+                    {{ t("tournament_selection.remove_confirmation") }}
+                </p>
+                <p
+                    class="fw-semibold mb-0"
+                    data-tournament-removal-name
+                ></p>
+            </div>
+            <div class="modal-footer">
+                <button
+                    class="btn btn-secondary"
+                    type="button"
+                    data-bs-dismiss="modal"
+                >
+                    {{ t("tournament_selection.cancel") }}
+                </button>
+                <button
+                    class="btn btn-danger"
+                    type="button"
+                    data-confirm-tournament-removal
+                >
+                    {{ t("tournament_selection.remove") }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

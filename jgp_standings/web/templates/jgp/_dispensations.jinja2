@@ -1,0 +1,152 @@
+<div
+    data-dispensation-editor
+    data-export-endpoint="{{ url_for('jgp.export_dispensations') }}"
+    data-save-endpoint="{{ url_for('jgp.save_dispensations') }}"
+    data-configuration-revision="{{ configuration.revision }}"
+    data-oldest-band-end="{{ oldest_band_end }}"
+>
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <h2 class="h5 mb-0">{{ t("dispensations.current") }}</h2>
+        <button
+            class="btn btn-outline-danger btn-sm"
+            type="button"
+            data-remove-all-dispensations
+            disabled
+        >
+            {{ t("dispensations.remove_all") }}
+        </button>
+    </div>
+    <div
+        class="mt-3"
+        data-dispensations
+        data-dispensation-count="0"
+    ></div>
+    <div class="mt-3">
+        <button class="btn btn-outline-primary btn-sm" type="button"
+                data-export-dispensations aria-describedby="dispensation-export-status" disabled>
+            {{ t("dispensations.export") }}
+        </button>
+        <div class="form-text" id="dispensation-export-status" role="status"
+             data-dispensation-export-status>{{ t("dispensations.empty") }}</div>
+    </div>
+    <hr>
+    <h2 class="h5">{{ t("dispensations.add_heading") }}</h2>
+    <div class="row g-3">
+        <section
+            class="col-lg-7"
+            aria-label="{{ t('player_search.title') }}"
+        >
+            <div
+                data-player-name-selector
+                data-search-endpoint="{{ url_for('jgp.player_search') }}"
+            ></div>
+        </section>
+        <div class="col-sm-6 col-lg-3">
+            <label class="form-label" for="new-dispensation-year">
+                {{ t("dispensations.year") }}
+            </label>
+            <input
+                class="form-control"
+                id="new-dispensation-year"
+                type="text"
+                inputmode="numeric"
+                maxlength="4"
+                autocomplete="off"
+                aria-describedby="new-dispensation-year-help"
+                data-dispensation-year
+            >
+            <div class="form-text" id="new-dispensation-year-help">
+                {{ t("dispensations.year_help") }}
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+            <span class="form-label d-none d-sm-block invisible" aria-hidden="true">&nbsp;</span>
+            <button
+                class="btn btn-primary w-100"
+                type="button"
+                data-save-dispensation
+                disabled
+            >
+                {{ t("dispensations.add") }}
+            </button>
+        </div>
+    </div>
+    <div
+        class="mt-3"
+        role="status"
+        aria-live="polite"
+        data-save-state="idle"
+        data-dispensation-save-status
+    ></div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div
+            class="toast border-0"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            data-dispensation-toast
+        >
+            <div class="d-flex">
+                <div class="toast-body" data-dispensation-toast-message></div>
+                <button
+                    class="btn-close btn-close-white me-2 m-auto"
+                    type="button"
+                    data-bs-dismiss="toast"
+                    aria-label="{{ t('dispensations.dismiss_notification') }}"
+                ></button>
+            </div>
+        </div>
+    </div>
+    <div
+        class="modal"
+        tabindex="-1"
+        aria-labelledby="dispensation-removal-heading"
+        aria-describedby="dispensation-removal-description"
+        data-dispensation-removal-dialog
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2
+                        class="modal-title fs-5"
+                        id="dispensation-removal-heading"
+                        data-dispensation-removal-heading
+                    >
+                        {{ t("dispensations.remove_heading") }}
+                    </h2>
+                    <button
+                        class="btn-close"
+                        type="button"
+                        data-bs-dismiss="modal"
+                        aria-label="{{ t('dispensations.cancel') }}"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <p
+                        id="dispensation-removal-description"
+                        data-dispensation-removal-description
+                    >
+                        {{ t("dispensations.remove_confirmation") }}
+                    </p>
+                    <div class="fw-semibold" data-dispensation-removal-names></div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        data-bs-dismiss="modal"
+                    >
+                        {{ t("dispensations.cancel") }}
+                    </button>
+                    <button
+                        class="btn btn-danger"
+                        type="button"
+                        data-confirm-dispensation-removal
+                    >
+                        {{ t("dispensations.remove") }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

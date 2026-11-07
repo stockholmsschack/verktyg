@@ -1,0 +1,288 @@
+{% from 'jgp/_klass_problems.jinja2' import naming_problems with context %}
+{% from 'jgp/_band_heading.jinja2' import band_heading with context %}
+{% extends "jgp/base.jinja2" %}
+
+{% set tabs = [
+    ("tournament-addition", "configuration.tournaments"),
+    ("dispensations", "configuration.dispensations"),
+    ("contributor", "configuration.contributor"),
+    ("club-display-names", "configuration.club_display_names"),
+    ("separators", "configuration.separators"),
+    ("rules-file", "rules_file.title"),
+] %}
+
+{% macro summary_term(tab, label_key) %}
+    <dt class="col-sm-4">
+        <a
+            class="link-body-emphasis link-underline-opacity-25 link-underline-opacity-75-hover"
+            href="#{{ tab }}-panel"
+            data-configuration-tab-link="{{ tab }}-tab"
+        >{{ t(label_key) }}</a>
+    </dt>
+{% endmacro %}
+
+{% block title %}{{ t("configuration.title") }} · {{ t("app.name") }}{% endblock %}
+
+{% block content %}
+    <h1>{{ t("configuration.title") }}</h1>
+    {% if configuration_problems %}
+        <div class="alert alert-danger" role="alert" data-configuration-problems>
+            <p class="mb-2">{{ t("configuration.invalid") }}</p>
+            <ul class="mb-0">
+                {% for problem in configuration_problems %}
+                    <li>{{ problem }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% elif configuration %}
+        <dl class="row" data-configuration-summary>
+            {{ summary_term("tournament-addition", "configuration.tournaments") }}
+            <dd class="col-sm-8" data-configuration-tournament-summary>
+                {{ configuration.tournament_ids | join(", ") }}
+            </dd>
+
+            {{ summary_term("contributor", "configuration.contributor") }}
+            <dd class="col-sm-8" data-configuration-contributor-summary>
+                {{ configuration.contributor.name }}
+                &lt;{{ configuration.contributor.email }}&gt;
+            </dd>
+
+            {{ summary_term("dispensations", "configuration.dispensations") }}
+            <dd class="col-sm-8" data-configuration-dispensation-count>
+                {{ configuration.dispensation_dict | length
+                   if configuration.dispensation_dict
+                   else t("configuration.none") }}
+            </dd>
+
+            {{ summary_term("club-display-names", "configuration.club_display_names") }}
+            <dd class="col-sm-8" data-configuration-club-alias-count>
+                {{ configuration.club_display_names | length
+                   if configuration.club_display_names
+                   else t("configuration.none") }}
+            </dd>
+
+            {{ summary_term("separators", "configuration.separators") }}
+            <dd class="col-sm-8" data-configuration-separator-summary>
+                {% for label, rows in configuration.finals_separators.items() %}
+                    <div>{{ band_heading(label) }}: {{ rows | join(", ") }}</div>
+                {% else %}
+                    {{ t("configuration.none") }}
+                {% endfor %}
+            </dd>
+
+            {{ summary_term("rules-file", "rules_file.title") }}
+            <dd class="col-sm-8">rules.typ</dd>
+        </dl>
+
+        {% if calendar_status == "stale" %}
+            <div
+                class="alert alert-warning"
+                role="status"
+                data-calendar-alert="stale"
+                data-calendar-rollover
+                data-start-endpoint="{{ url_for('jgp.start_tournament_rollover') }}"
+                data-cancel-endpoint="{{ url_for('jgp.cancel_tournament_rollover') }}"
+                data-configuration-revision="{{ configuration.revision }}"
+            >
+                {% if rollover_active %}
+                    <p>{{ t("configuration.rollover.active", year=current_year) }}</p>
+                    <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        data-cancel-calendar-rollover
+                    >
+                        {{ t("configuration.rollover.cancel") }}
+                    </button>
+                {% else %}
+                    <p>{{ t("configuration.rollover.stale", year=current_year) }}</p>
+                    <button
+                        class="btn btn-warning"
+                        type="button"
+                        data-start-calendar-rollover
+                    >
+                        {{ t("configuration.rollover.start", year=current_year) }}
+                    </button>
+                {% endif %}
+                <div
+                    class="mt-2"
+                    role="alert"
+                    data-calendar-rollover-status
+                ></div>
+            </div>
+        {% elif calendar_status == "mixed" %}
+            <div class="alert alert-danger" role="alert" data-calendar-alert="mixed">
+                {{ t("configuration.tournament_years.mixed") }}
+            </div>
+        {% elif calendar_status == "future" %}
+            <div class="alert alert-danger" role="alert" data-calendar-alert="future">
+                {{ t("configuration.tournament_years.future", year=current_year) }}
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div class="my-4">
+        <button
+            class="btn btn-success"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#generation-form-dialog"
+            aria-describedby="generation-blocked-reason"
+            data-generation-open
+            data-rollover-active="{{ 'true' if rollover_active else 'false' }}"
+            data-has-selected-tournaments="{{ 'true' if selected_tournaments else 'false' }}"
+            {% if generation_blocked_reason %}disabled{% endif %}
+        >
+            {{ t("generation.open") }}
+        </button>
+        <p class="form-text mb-0" id="generation-blocked-reason" data-generation-blocked-reason>
+            {{- t(generation_blocked_reason) if generation_blocked_reason -}}
+        </p>
+    </div>
+
+    {% if configuration %}
+        {% include "jgp/_generation_dialog.jinja2" %}
+        <p class="mt-4">
+            <a href="{{ url_for('jgp.klass_naming_help', lang=locale) }}">{{ t('klass_naming.help_link') }}</a>
+        </p>
+        <div
+            class="mt-4"
+            data-tournament-search
+            data-search-endpoint="{{ url_for('jgp.tournament_search') }}"
+            data-lookup-endpoint-template="{{ url_for(
+                'jgp.canonical_tournament',
+                tournament_id='__tournament_id__'
+            ) }}"
+            data-save-endpoint="{{ url_for('jgp.save_tournaments') }}"
+            data-configuration-revision="{{ configuration.revision }}"
+        >
+            {% if selection_problem %}
+                <div class="alert alert-danger" role="alert" data-tournament-selection-problem>
+                    <div class="fw-semibold">{{ t(selection_problem) }}</div>
+                    {{ naming_problems(selection_klass_problems) }}
+                </div>
+            {% endif %}
+            <section
+                class="mb-4"
+                aria-labelledby="selected-tournaments-heading"
+            >
+                <h2 class="h5 mb-2" id="selected-tournaments-heading">
+                    {{ t("tournament_selection.selected_heading") }}
+                </h2>
+                <div
+                    data-selected-count="0"
+                    data-selected-tournaments
+                ></div>
+                <div
+                    class="mt-3"
+                    role="status"
+                    aria-live="polite"
+                    data-save-state="idle"
+                    data-tournament-save-status
+                ></div>
+            </section>
+
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                        {% for tab, label_key in tabs %}
+                            <li class="nav-item" role="presentation">
+                                <button
+                                    class="nav-link{% if loop.first %} active{% endif %}"
+                                    id="{{ tab }}-tab"
+                                    type="button"
+                                    role="tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#{{ tab }}-panel"
+                                    aria-controls="{{ tab }}-panel"
+                                    aria-selected="{{ 'true' if loop.first else 'false' }}"
+                                >
+                                    {{ t(label_key) }}
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    {% for tab, label_key in tabs %}
+                        <section
+                            class="tab-pane card-body{% if loop.first %} active{% endif %}"
+                            id="{{ tab }}-panel"
+                            role="tabpanel"
+                            aria-labelledby="{{ tab }}-tab"
+                            tabindex="0"
+                        >
+                            {%- if tab == "tournament-addition" %}
+                                {% include "jgp/_tournament_addition.jinja2" %}
+                            {% elif tab == "dispensations" %}
+                                {% include "jgp/_dispensations.jinja2" %}
+                            {% elif tab == "contributor" %}
+                                {% include "jgp/_contributor.jinja2" %}
+                            {% elif tab == "club-display-names" %}
+                                {% include "jgp/_club_display_names.jinja2" %}
+                            {% elif tab == "separators" %}
+                                {% include "jgp/_finals_separators.jinja2" %}
+                            {% elif tab == "rules-file" %}
+                                {% include "jgp/_rules_file.jinja2" %}
+                            {% endif -%}
+                        </section>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <script id="selected-tournaments-data" type="application/json">
+            {{ selected_tournaments | tojson }}
+        </script>
+        <script id="club-display-names-data" type="application/json">
+            {{ club_display_names | tojson }}
+        </script>
+        <script id="dispensations-data" type="application/json">
+            {{ dispensations | tojson }}
+        </script>
+        <script id="finals-separators-data" type="application/json">
+            {{ configuration.finals_separators | tojson }}
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/configuration-tab-navigation.js') }}"
+    ></script>
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/tournament-search.js') }}"
+    ></script>
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/contributor-editor.js') }}"
+    ></script>
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/club-display-name-editor.js') }}"
+    ></script>
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/rules-file-editor.js') }}"
+    ></script>
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/player-name-selector.js') }}"
+    ></script>
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/dispensation-editor.js') }}"
+    ></script>
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/finals-editor.js') }}"
+    ></script>
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/generation-form.js') }}"
+    ></script>
+    <script
+        type="module"
+        src="{{ url_for('jgp.static', filename='js/calendar-rollover.js') }}"
+    ></script>
+{% endblock %}

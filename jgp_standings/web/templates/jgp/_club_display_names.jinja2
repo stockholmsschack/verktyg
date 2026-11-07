@@ -1,0 +1,54 @@
+<div
+    data-club-display-name-editor
+    data-save-endpoint="{{ url_for('jgp.save_club_display_name') }}"
+    data-clubs-endpoint="{{ url_for('jgp.district_clubs') }}"
+    data-configuration-revision="{{ configuration.revision }}"
+>
+    <h2 class="h5">{{ t("club_display_names.add_heading") }}</h2>
+    <div class="row g-3 align-items-start">
+        <div class="col-lg-6">
+            <div data-club-display-name-selector></div>
+        </div>
+        <div class="col-lg-4">
+            <label
+                class="form-label"
+                for="new-club-display-name"
+            >
+                {{ t("club_display_names.short_name") }}
+            </label>
+            <input
+                class="form-control"
+                id="new-club-display-name"
+                type="text"
+                maxlength="200"
+                autocomplete="off"
+                data-new-club-display-name
+            >
+        </div>
+        <div class="col-lg-2 align-self-end">
+            <button
+                class="btn btn-primary w-100"
+                type="button"
+                disabled
+                data-add-club-display-name
+            >
+                {{ t("club_display_names.add") }}
+            </button>
+        </div>
+    </div>
+    <div
+        class="form-text mt-2"
+        role="status"
+        aria-live="polite"
+        data-club-display-name-status
+    ></div>
+    <hr>
+    <h2 class="h5">{{ t("club_display_names.current") }}</h2>
+    <div data-club-display-name-list></div>
+    <div
+        class="form-text"
+        role="status"
+        aria-live="polite"
+        data-club-display-name-list-status
+    ></div>
+</div>

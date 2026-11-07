@@ -1,0 +1,11 @@
+{
+  "source": "https://member.schack.se/public/api/v1",
+  "captured_at": "2026-10-30",
+  "policy_version": "trojanska-7132-v1",
+  "tournament_ids": [
+    7132
+  ],
+  "rating_list_date": "2026-10-24",
+  "configuration": "active-configuration.toml",
+  "purpose": "Regression capture for separate ladders and event eligibility, including excluded groups."
+}

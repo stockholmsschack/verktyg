@@ -1,0 +1,14 @@
+{
+  "source": "https://member.schack.se/public/api/v1",
+  "captured_at": "2026-08-02",
+  "purpose": "Frozen partial-2026-season upstream inputs for the JGP standings rewrite (Phase 3).",
+  "tournament_ids": [
+    6544,
+    6540,
+    6534,
+    6685,
+    6826,
+    6853
+  ],
+  "rating_list_date": "2026-05-30"
+}

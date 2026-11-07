@@ -1,0 +1,67 @@
+{% from 'jgp/_band_heading.jinja2' import band_heading with context %}
+<div
+    data-finals-editor
+    data-save-endpoint="{{ url_for('jgp.save_finals_separators') }}"
+    data-configuration-revision="{{ configuration.revision }}"
+>
+    <p>{{ t("finals.description") }}</p>
+    <form data-finals-form novalidate>
+        <div class="d-flex justify-content-end mb-3">
+            <button
+                class="btn btn-outline-danger"
+                type="button"
+                data-clear-all-finals-groups
+            >
+                {{ t("finals.clear_all_groups") }}
+            </button>
+        </div>
+        <div class="row g-3">
+            {% for label in separator_labels %}
+                <div class="col-lg-6">
+                    <fieldset
+                        class="border rounded p-3 h-100"
+                        data-finals-group="{{ label }}"
+                        data-finals-heading="{{ band_heading(label) }}"
+                    >
+                        <legend class="h6 float-none w-auto px-1 mb-2">
+                            {{ t("finals.group", band=band_heading(label)) }}
+                        </legend>
+                        <div class="vstack gap-2 mb-3" data-finals-separator-list></div>
+                        <div class="d-flex gap-2">
+                            <button
+                                class="btn btn-outline-secondary btn-sm"
+                                type="button"
+                                data-add-finals-separator
+                            >
+                                {{ t("finals.add") }}
+                            </button>
+                            <button
+                                class="btn btn-outline-danger btn-sm"
+                                type="button"
+                                data-clear-all-finals-separators
+                            >
+                                {{ t("finals.clear_all") }}
+                            </button>
+                        </div>
+                    </fieldset>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+            <button
+                class="btn btn-primary"
+                type="submit"
+                disabled
+                data-save-finals
+            >
+                {{ t("finals.save") }}
+            </button>
+        </div>
+        <div
+            class="form-text"
+            role="status"
+            aria-live="polite"
+            data-finals-save-status
+        >{{ t("finals.unchanged") }}</div>
+    </form>
+</div>
