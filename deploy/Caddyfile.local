@@ -1,0 +1,20 @@
+# Local development only, like Playtime's Caddyfile: plain HTTP on the
+# origin registered with the shared OAuth client, and no certificates.
+# Run it with caddy_mercure. The portal publishes generation progress to this
+# block's hub, and browsers subscribe to it, as on the VPS.
+{
+	auto_https off
+}
+
+http://localhost:5000 {
+	handle /.well-known/mercure* {
+		mercure {
+			publisher_jwt !ChangeThisMercureHubJWTSecretKey!
+			subscriber_jwt !ChangeThisMercureHubJWTSecretKey!
+			anonymous
+		}
+	}
+	handle {
+		reverse_proxy 127.0.0.1:6001
+	}
+}

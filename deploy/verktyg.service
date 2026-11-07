@@ -1,0 +1,39 @@
+[Unit]
+Description=StSF Verktyg portal
+After=network.target
+
+[Service]
+Type=simple
+User=verktyg
+Group=verktyg
+
+# The portal reads /opt/verktyg/.env at startup.
+WorkingDirectory=/opt/verktyg
+# Typst must be on this PATH for JGP and Flickornas generation.
+Environment="PATH=/opt/verktyg/.venv/bin:/usr/local/bin:/usr/bin:/bin"
+
+# Logs go to the journal: journalctl -u verktyg -f
+ExecStart=/opt/verktyg/.venv/bin/gunicorn \
+    --workers 2 \
+    --bind 127.0.0.1:6001 \
+    --access-logfile - \
+    --error-logfile - \
+    'verktyg:create_app()'
+
+# --- Security ---
+# Root owns the code and venv; verktyg can only read them. Tool state and
+# output live in /var/lib/verktyg, the only writable path (StateDirectory).
+StateDirectory=verktyg
+StateDirectoryMode=0750
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+
+# --- Restart policy ---
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

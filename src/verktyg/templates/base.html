@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="{{ locale|default('sv') }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ _("portal.title") }}{% endblock %} · StSF</title>
+    <script src="{{ url_for('static', filename='js/color-modes.js') }}"></script>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/tools.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/portal.css') }}">
+    {% block head %}{% endblock %}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+  </head>
+  <body class="bg-body-tertiary">
+    {#- Bootstrap Icons 1.13.1 (MIT) for the colour mode menu. -#}
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+      <symbol id="theme-icon-check" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></symbol>
+      <symbol id="theme-icon-light" viewBox="0 0 16 16"><path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/></symbol>
+      <symbol id="theme-icon-dark" viewBox="0 0 16 16"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/></symbol>
+      <symbol id="theme-icon-auto" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 0 8 1zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16"/></symbol>
+    </svg>
+    <a class="visually-hidden-focusable p-3" href="#main">{{ _("portal.skip") }}</a>
+    <header class="bg-body border-bottom">
+      <nav class="container-fluid px-3 py-3 d-flex flex-wrap align-items-center gap-3" aria-label="{{ _('portal.menu') }}">
+        <div class="d-flex flex-wrap align-items-center gap-3">
+          <a class="portal-logo" href="https://www.stockholmsschack.se">
+            <img src="{{ url_for('static', filename='images/stsf.png') }}" width="220" height="90" style="height: auto" alt="Stockholms schackförbund">
+          </a>
+          <a class="portal-brand d-flex align-items-center gap-3 text-decoration-none text-body" href="{{ url_for('portal.index') }}">
+            {#- images/tools.svg inline, so its tile and icon follow the colour mode. -#}
+            <svg class="portal-icon" width="48" height="48" viewBox="0 0 128 128" aria-hidden="true">
+              <rect width="128" height="128" rx="20"/>
+              <path transform="translate(24 24) scale(5)" d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z"/>
+            </svg>
+            <span class="fw-semibold">Verktyg</span>
+          </a>
+          {% if not config.REQUIRE_AUTH %}
+            <span class="badge text-bg-warning">{{ _("portal.dev_mode") }}</span>
+          {% endif %}
+        </div>
+        <div class="d-flex flex-wrap align-items-center justify-content-end gap-3 ms-auto">
+          {% if can_manage_access %}
+            {% set here = request.endpoint == "access.page" %}
+            <a class="nav-link{% if here %} active{% endif %}" href="{{ url_for('access.page') }}"{% if here %} aria-current="page"{% endif %}>{{ _("access.title") }}</a>
+          {% endif %}
+          {% if config.REQUIRE_AUTH and session.identity %}
+            <form class="d-flex align-items-center gap-2" method="post" action="{{ url_for('auth.logout') }}">
+              <span class="small text-body-secondary">{{ session.identity.name or session.identity.given_name or '' }}</span>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-outline-secondary btn-sm text-nowrap" type="submit">{{ _("portal.sign_out") }}</button>
+            </form>
+          {% elif config.REQUIRE_AUTH %}
+            <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">{{ _("portal.sign_in") }}</a>
+          {% endif %}
+          {#- Fixed in width, so switching moves nothing. It names and flags the other language for its readers.
+              It keeps the page's other query arguments, such as Senior's season. On Senior's pages,
+              `data-senior-navigation` makes the switch wait for a pending tournament save. -#}
+          <form method="get" action="{{ request.path }}" data-senior-navigation>
+            {% for key, value in request.args.items(multi=True) if key != "lang" %}
+              <input type="hidden" name="{{ key }}" value="{{ value }}">
+            {% endfor %}
+            <input type="hidden" name="lang" value="{{ other_locale }}">
+            <button class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center justify-content-center gap-2 locale-switch" type="submit" id="locale-choice" lang="{{ other_locale }}" title="{{ other_locale_name }}">
+              <img src="{{ url_for('static', filename='images/flags/' ~ {'sv': 'se', 'en': 'gb'}[other_locale] ~ '.svg') }}" height="12" alt="">{{ other_locale|upper }}
+            </button>
+          </form>
+          {#- Bootstrap's light/dark/auto menu, last in the header. js/color-modes.js applies and remembers
+              the choice; auto, the default, follows the operating system. -#}
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-inline-flex align-items-center gap-1" type="button" id="theme-choice" data-bs-toggle="dropdown" aria-expanded="false" data-label="{{ _('portal.theme') }}" aria-label="{{ _('portal.theme') }}" title="{{ _('portal.theme') }}">
+              <svg class="bi" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#theme-icon-auto"></use></svg>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-choice">
+              {% for value in ("light", "dark", "auto") %}
+                <li>
+                  <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-bs-theme-value="{{ value }}" aria-pressed="false">
+                    <svg class="bi" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#theme-icon-{{ value }}"></use></svg>
+                    <span>{{ _("portal.theme_" ~ value) }}</span>
+                    <svg class="bi ms-auto theme-check" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#theme-icon-check"></use></svg>
+                  </button>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+      {#- A tool's own pages; `t` comes from the tool. -#}
+      {% set tool = g.get("portal_tool") %}
+      {% if tool and t is defined %}
+        <nav class="border-top bg-body-tertiary" aria-label="{{ t('app.name') }}">
+          <div class="container py-2 d-flex flex-wrap align-items-center gap-3">
+            <span class="fw-semibold">{{ t("app.name") }}</span>
+            {% for page, label in tool_pages[tool] %}
+              {% set endpoint = tool ~ "." ~ page %}
+              <a class="nav-link{% if request.endpoint == endpoint %} active{% endif %}" href="{{ url_for(endpoint) }}"{% if request.endpoint == endpoint %} aria-current="page"{% endif %}>{{ t(label) }}</a>
+            {% endfor %}
+          </div>
+        </nav>
+      {% endif %}
+    </header>
+    <main id="main" class="container py-5">{% block content %}{% endblock %}</main>
+    <footer class="container py-4 border-top text-body-secondary small">Stockholms Schackförbund</footer>
+    {% block scripts %}
+      <script src="{{ url_for('static', filename='vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/csrf.js') }}"></script>
+    {% endblock %}
+  </body>
+</html>

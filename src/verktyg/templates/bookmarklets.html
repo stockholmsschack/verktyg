@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Bookmarklets{% endblock %}
+{% block content %}
+  <h1>Bookmarklets</h1>
+  <p class="lead text-body-secondary">{{ _("bookmarklets.lead") }}</p>
+  {% if bookmarklets %}
+  <ul class="nav nav-tabs mt-4" role="tablist">
+    {% for bookmarklet in bookmarklets %}
+      {% set id = bookmarklet.slug %}
+      <li class="nav-item" role="presentation">
+        <button class="nav-link{% if loop.first %} active{% endif %}" id="{{ id }}-tab" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#{{ id }}" aria-controls="{{ id }}" aria-selected="{{ 'true' if loop.first else 'false' }}">{{ bookmarklet.tabs[locale] }}</button>
+      </li>
+    {% endfor %}
+  </ul>
+  <div class="tab-content bg-body border border-top-0 rounded-bottom p-4 shadow-sm">
+    {% for bookmarklet in bookmarklets %}
+      {% set id = bookmarklet.slug %}
+      <section class="tab-pane{% if loop.first %} active{% endif %}" id="{{ id }}" role="tabpanel" aria-labelledby="{{ id }}-tab" tabindex="0" data-bookmarklet>
+        <div class="d-flex justify-content-between">
+          <a class="btn btn-primary btn-sm bookmarklet-link" href="{{ urls[id] }}" draggable="true" title="{{ _('bookmarklets.drag_title') }}" aria-describedby="{{ id }}-status" data-drag>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+            </svg>
+            {{ bookmarklet.labels[locale] }}
+          </a>
+          <button type="button" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-2" aria-describedby="{{ id }}-status" data-copy>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+            </svg>
+            <span>{{ _("bookmarklets.copy") }}</span>
+          </button>
+        </div>
+        <p id="{{ id }}-status" class="small text-body-secondary mt-2" role="status" data-status>{{ _("bookmarklets.status") }}</p>
+        <details data-details>
+          <summary>{{ _("bookmarklets.show_code") }}</summary>
+          <label for="{{ id }}-code" class="form-label visually-hidden">{{ _("bookmarklets.code_label") }}</label>
+          <textarea id="{{ id }}-code" class="form-control form-control-sm font-monospace mt-2" rows="3" readonly spellcheck="false" data-code>{{ urls[id] }}</textarea>
+        </details>
+        <div class="bookmarklet-description mt-3">{{ bookmarklet.descriptions[locale]|safe }}</div>
+      </section>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <section class="mt-4">
+    <h2 class="h5">{{ _("bookmarklets.install") }}</h2>
+    <p class="mb-1">{{ _("bookmarklets.install_drag")|safe }}</p>
+    <p class="mb-1">{{ _("bookmarklets.install_copy")|safe }}</p>
+    <p>{{ _("bookmarklets.install_locale") }}</p>
+  </section>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+  <script type="application/json" id="bookmarklet-text">
+    {{- {"copy": _("bookmarklets.copy"), "copying": _("bookmarklets.copying"), "copied": _("bookmarklets.copied"), "clicked": _("bookmarklets.clicked"), "copy_done": _("bookmarklets.copy_done"), "copy_failed": _("bookmarklets.copy_failed")}|tojson -}}
+  </script>
+  <script src="{{ url_for('static', filename='js/bookmarklets.js') }}" defer></script>
+{% endblock %}

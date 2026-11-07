@@ -1,0 +1,50 @@
+[project]
+name = "verktyg"
+version = "0.1.0"
+description = "StSF's shared tools portal and public bookmarklets"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.1.2",
+    "stsf-jgp-standings",
+    "stsf-flickornas-standings",
+    "stsf-senior-gp",
+    "google-auth-oauthlib>=1.2.4",
+    "google-api-python-client>=2.189.0",
+    "python-dotenv>=1.0",
+    "markdown-it-py>=4.0",
+]
+
+[tool.uv.workspace]
+members = ["tools/jgp", "tools/flickornas", "tools/senior"]
+
+[tool.uv.sources]
+stsf-jgp-standings = { workspace = true }
+stsf-flickornas-standings = { workspace = true }
+stsf-senior-gp = { workspace = true }
+
+[tool.uv]
+# Polars 1.44.2 fails two deterministic-order tests; 1.38.1 passes.
+constraint-dependencies = ["polars==1.38.1"]
+
+[project.optional-dependencies]
+production = ["gunicorn>=23.0.0"]
+
+[dependency-groups]
+dev = ["pytest>=8.3.0", "ruff>=0.15.7"]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+verktyg = ["templates/*.html", "static/css/*.css", "static/js/*.js", "bookmarklets/*.md", "static/images/*.svg", "static/images/*.png", "static/vendor/bootstrap/*", "static/vendor/bootstrap-icons/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py313"

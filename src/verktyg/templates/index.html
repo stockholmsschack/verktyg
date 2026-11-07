@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="mb-4">{{ _("index.heading") }}</h1>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <article class="card h-100 shadow-sm">
+        <div class="card-body p-4 d-flex flex-column">
+          <h2 class="h5">Bookmarklets</h2>
+          <p>{{ _("index.bookmarklets")|safe }}</p>
+          <a class="btn btn-primary align-self-start mt-auto" href="{{ url_for('portal.bookmarklets') }}">{{ _("index.show_bookmarklets") }}</a>
+        </div>
+      </article>
+    </div>
+    {#- Show only the tools this visitor may use; a signed-out visitor sees none. -#}
+    {% if visible_tools %}
+      {% for id in visible_tools %}
+        {% set name = _("tool." ~ id) %}
+        <div class="col-md-4">
+          <article class="card h-100 shadow-sm">
+            <div class="card-body p-4 d-flex flex-column">
+              <h2 class="h5">{{ name }}</h2>
+              <p>{{ _("tool." ~ id ~ ".description") }}</p>
+              <a class="btn btn-primary align-self-start mt-auto" href="{{ tools[id].url_prefix }}/">{{ _("index.open", name=name) }}</a>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    {% elif not session.identity %}
+      <div class="col-md-4">
+        <article class="card h-100 border-dashed bg-transparent">
+          <div class="card-body p-4 d-flex flex-column">
+            <h2 class="h5">{{ _("index.more_tools") }}</h2>
+            <p class="text-body-secondary">{{ _("index.more_tools_lead") }}</p>
+            <a class="btn btn-outline-primary align-self-start mt-auto" href="{{ url_for('auth.login') }}">{{ _("portal.sign_in") }}</a>
+          </div>
+        </article>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
