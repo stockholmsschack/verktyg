@@ -1,0 +1,84 @@
+<div
+    data-contributor-editor
+    data-save-endpoint="{{ url_for('jgp.save_contributor') }}"
+    data-configuration-revision="{{ configuration.revision }}"
+    data-default-name="{{ default_contributor_name }}"
+    data-default-email="{{ default_contributor_email }}"
+>
+    <form data-contributor-form novalidate>
+        <div class="mb-3">
+            <label class="form-label" for="contributor-name">
+                {{ t("contributor.name") }}
+            </label>
+            <div class="input-group">
+                <input
+                    class="form-control"
+                    id="contributor-name"
+                    name="name"
+                    type="text"
+                    maxlength="200"
+                    value="{{ configuration.contributor.name if configuration else '' }}"
+                    placeholder="{{ default_contributor_name }}"
+                    autocomplete="organization"
+                    data-contributor-name
+                >
+                <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    aria-label="{{ t('contributor.clear_name') }}"
+                    data-clear-contributor-name
+                    {% if not configuration.contributor.name %}disabled{% endif %}
+                >
+                    {{ t("contributor.clear") }}
+                </button>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="contributor-email">
+                {{ t("contributor.email") }}
+            </label>
+            <div class="input-group">
+                <input
+                    class="form-control"
+                    id="contributor-email"
+                    name="email"
+                    type="email"
+                    pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+                    maxlength="320"
+                    value="{{ configuration.contributor.email if configuration else '' }}"
+                    placeholder="{{ default_contributor_email }}"
+                    autocomplete="email"
+                    data-contributor-email
+                >
+                <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    aria-label="{{ t('contributor.clear_email') }}"
+                    data-clear-contributor-email
+                    {% if not configuration.contributor.email %}disabled{% endif %}
+                >
+                    {{ t("contributor.clear") }}
+                </button>
+                <div class="invalid-feedback">
+                    {{ t("contributor.invalid_email") }}
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button
+                class="btn btn-primary"
+                type="submit"
+                disabled
+                data-save-contributor
+            >
+                {{ t("contributor.save") }}
+            </button>
+        </div>
+        <div
+            class="form-text"
+            role="status"
+            aria-live="polite"
+            data-contributor-save-status
+        >{{ t("contributor.unchanged") }}</div>
+    </form>
+</div>

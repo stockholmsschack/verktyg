@@ -1,0 +1,7 @@
+{% macro band_heading(label) -%}
+    {%- if label.endswith(" onward") -%}
+        {{ t("finals.band_onward", year=label.split(" ")[0]) }}
+    {%- else -%}
+        {{ label }}
+    {%- endif -%}
+{%- endmacro %}

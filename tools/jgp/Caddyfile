@@ -1,0 +1,42 @@
+http://jgp.localhost:5000, http://127.0.0.1:5000 {
+	mercure {
+		transport bolt {
+			path {$MERCURE_DB_PATH:/tmp/jgp-mercure.db}
+			size 1000
+		}
+		publisher_jwt {$MERCURE_JWT_SECRET:!ChangeThisMercureHubJWTSecretKey!} {$MERCURE_JWT_ALG:HS256}
+		subscriber_jwt {$MERCURE_JWT_SECRET:!ChangeThisMercureHubJWTSecretKey!} {$MERCURE_JWT_ALG:HS256}
+		anonymous
+		cors_origins http://jgp.localhost:5000
+	}
+
+	@jgp host jgp.localhost
+	@jgp_downloads {
+		host jgp.localhost
+		path /downloads/*
+	}
+	handle @jgp_downloads {
+		uri strip_prefix /downloads
+		root * {$JGP_DOWNLOAD_ROOT:./output/runs}
+		header Content-Disposition "attachment"
+		file_server
+	}
+	@jgp_reports {
+		host jgp.localhost
+		path /reports/*
+	}
+	handle @jgp_reports {
+		uri strip_prefix /reports
+		root * {$JGP_DOWNLOAD_ROOT:./output/runs}
+		header Content-Disposition "attachment"
+		file_server
+	}
+	handle @jgp {
+		reverse_proxy 127.0.0.1:8001
+	}
+
+	# The loopback origin exists only for server-to-hub publication.
+	handle {
+		respond "Not Found" 404
+	}
+}

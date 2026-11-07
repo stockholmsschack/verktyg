@@ -1,0 +1,47 @@
+<div
+    data-rules-file-editor
+    data-upload-endpoint="{{ url_for('jgp.upload_rules_file') }}"
+    data-has-custom-rules="{{ 'true' if has_custom_rules_file else 'false' }}"
+>
+    <div class="d-flex flex-wrap gap-2">
+        <a
+            class="btn btn-outline-secondary"
+            href="{{ url_for('jgp.download_rules_file') }}"
+            download="rules.typ"
+        >{{ t("rules_file.download") }}</a>
+        <button
+            class="btn btn-outline-secondary"
+            type="button"
+            data-restore-rules-file
+            {% if not has_custom_rules_file %}disabled{% endif %}
+        >{{ t("rules_file.restore") }}</button>
+    </div>
+    <hr>
+    <form data-rules-file-form>
+        <label class="form-label" for="rules-file-upload">
+            {{ t("rules_file.choose") }}
+        </label>
+        <input
+            class="form-control"
+            id="rules-file-upload"
+            name="rules"
+            type="file"
+            accept=".typ"
+            data-rules-file-input
+        >
+        <div class="d-flex justify-content-end mt-3">
+            <button
+                class="btn btn-primary"
+                type="submit"
+                disabled
+                data-upload-rules-file
+            >{{ t("rules_file.upload") }}</button>
+        </div>
+        <div
+            class="form-text"
+            role="status"
+            aria-live="polite"
+            data-rules-file-status
+        >{{ t("rules_file.select") }}</div>
+    </form>
+</div>

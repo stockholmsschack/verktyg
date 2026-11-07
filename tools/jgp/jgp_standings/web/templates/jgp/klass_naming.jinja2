@@ -1,0 +1,39 @@
+{% extends 'jgp/base.jinja2' %}
+{% block title %}{{ t('klass_naming.title') }}{% endblock %}
+{% block content %}
+<h1>{{ t('klass_naming.title') }}</h1>
+<p>{{ t('klass_naming.intro') }}</p>
+{% for section, rows in [
+    ('formats', [('Klass A', 'a'), ('Klass A 2006-2009', 'a'), ('Klass A (2006-2009)', 'a'),
+        ('Klass B tjej', 'b'), ('Wasa JGP 2026 Klass B', 'b'), ('JDM Snabb 2026 Klass E (2017 - )', 'e')]),
+    ('merged', [('Klass A/B', 'ab'), ('Klass AB', 'ab'), ('Klass A + B', 'ab'), ('Klass A B', 'ab')]),
+    ('spellings', [('JGP 2026 klass C', 'c'), ('SS 4 Springare JGP 2025, grupp A', 'a'),
+        ('JGP 2026 Grupp B', 'b')])
+] %}
+<section class="mb-4">
+    <h2 class="h4">{{ t('klass_naming.' ~ section) }}</h2>
+    <p>{{ t('klass_naming.' ~ section ~ '_text') }}</p>
+    <table class="table table-striped">
+        <thead><tr><th>{{ t('klass_naming.group_name') }}</th><th>{{ t('klass_naming.reads_as') }}</th></tr></thead>
+        <tbody>{% for name, klass in rows %}<tr><td><code>{{ name }}</code></td><td>{{ klass }}</td></tr>{% endfor %}</tbody>
+    </table>
+</section>
+{% endfor %}
+<h2 class="h4">{{ t('klass_naming.participation') }}</h2>
+<p>{{ t('klass_naming.participation_text') }}</p>
+<h2 class="h4">{{ t('klass_naming.fixes') }}</h2>
+<p>{{ t('klass_naming.fixes_text') }}</p>
+<table class="table table-striped">
+    <thead><tr><th>{{ t('klass_naming.refused') }}</th><th>{{ t('klass_naming.write_instead') }}</th></tr></thead>
+    <tbody>
+        {% for bad, replacement in [('Wasa JGP 2026', 'Wasa JGP 2026 Klass A'),
+            ('Nybörjargrupp A', 'Nybörjare Klass A'), ('KlassA', 'Klass A'),
+            ('KLASS A', 'Klass A'), ('Klass a', 'Klass A'), ('Klass Junior', 'Klass A Junior'),
+            ('Klass A1', 'Klass A 1'), ('Klass B/A', 'Klass A/B'), ('Klass A E', 'Klass A Elit'),
+            ('Klass A och Klass B', 'Klass A/B'), ('JGP Klass A, grupp B', 'JGP Klass A')] %}
+            <tr><td><code>{{ bad }}</code></td><td><code>{{ replacement }}</code></td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p>{{ t('klass_naming.retry') }}</p>
+{% endblock %}

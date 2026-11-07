@@ -1,0 +1,42 @@
+[project]
+name = "stsf-jgp-standings"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.1.2",
+    "polars>=1.38.1",
+    "requests>=2.32.5",
+    "typer>=0.16.0",
+    "xlsxwriter>=3.2.9",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "ruff>=0.15.7",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[project.scripts]
+jgp = "jgp_standings.cli:main"
+jgp-web = "jgp_standings.web.__main__:main"
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+# Install editable with `uv sync`; Typst assets, fixtures and configuration live in
+# the checkout. The package namespace avoids collisions with other tools' modules.
+[tool.setuptools.packages.find]
+include = ["jgp_standings*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+"jgp_standings.web" = [
+    "templates/**/*.jinja2",
+    "static/css/*.css",
+    "static/js/*.js",
+    "locales/*.json",
+]
