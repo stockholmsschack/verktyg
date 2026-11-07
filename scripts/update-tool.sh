@@ -17,9 +17,9 @@ fi
 tool="$1"
 branch="$2"
 case "$tool" in
-  jgp)        repository=stsf_jgp_standings ;;
-  flickornas) repository=stsf_flickornas_standings ;;
-  senior)     repository=stsf_senior_gp ;;
+  jgp)        repository=jgp ;;
+  flickornas) repository=flickornas ;;
+  senior)     repository=senior-gp ;;
   *)
     printf 'Unknown tool: %s (expected jgp, flickornas or senior)\n' "$tool" >&2
     exit 1
@@ -31,7 +31,7 @@ if ! git diff-index --quiet HEAD --; then
   exit 1
 fi
 
-url="git@github.com:bganesh/${repository}.git"
+url="git@github-stsf:stockholmsschack/${repository}.git"
 if [[ -d "tools/$tool" ]]; then
   git subtree pull --prefix="tools/$tool" "$url" "$branch" -m "Update $tool from its $branch branch"
 else
