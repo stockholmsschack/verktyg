@@ -200,7 +200,7 @@ def test_index_shows_only_the_tools_the_visitor_may_use(app):
     assert 'href="/tools/jgp/"' in page and 'href="/tools/flickornas/"' in page
     assert "Senior" not in page
     page = signed_in(app, "outsider@example.com", False).get("/?lang=en").text
-    assert "Sign out" in page and "outsider@example.com" in page
+    assert "Sign out" in page and "Operator" in page
     assert "More tools" not in page and "/tools/jgp/" not in page
 
 
