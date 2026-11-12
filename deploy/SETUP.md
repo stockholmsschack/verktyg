@@ -10,10 +10,34 @@ Playtime's layout. One difference: the virtual environment is the project's own
 | Application code | `/opt/verktyg` (root-owned, group `verktyg` reads) |
 | Virtual environment | `/opt/verktyg/.venv` |
 | Configuration | `/opt/verktyg/.env` (root-owned, mode 640) |
-| Tool state and output | `/var/lib/verktyg` (the only writable path) |
+| Tool state and output | `/var/lib/verktyg` (the only persistent writable directory tree) |
 | Service | `verktyg.service`, Gunicorn on `127.0.0.1:6001` |
 | Logs | the journal: `sudo journalctl -u verktyg -f` |
 | Python and uv cache | `/opt/uv-python` and `/var/cache/uv`, shared with Playtime |
+
+All three tools run as the `verktyg` account and can create files and
+subdirectories inside `/var/lib/verktyg`. Setup sets
+`VERKTYG_DATA_DIRECTORY=/var/lib/verktyg`; the portal then assigns each tool
+separate state and output directories:
+
+```text
+/var/lib/verktyg/
+├── access.json
+├── jgp/
+│   ├── state/
+│   └── output/
+├── flickornas/
+│   ├── state/
+│   └── output/
+└── senior/
+    ├── state/
+    └── output/
+```
+
+Each tool writes generated files beneath its own `output/` directory, and
+the portal serves downloads from there. Code and templates remain read-only
+under `/opt/verktyg`. The service also has private temporary storage through
+`PrivateTmp=true`; persistent state and results belong in `/var/lib/verktyg`.
 
 ## Before you start
 
@@ -82,8 +106,8 @@ sudo useradd --system --shell /bin/false --home-dir /opt/verktyg \
 
 It is a system account with no login shell and no home directory of its own.
 It needs no other groups: root installs the code and runs `uv sync`, so
-`verktyg` only reads `/opt/verktyg` through its group and writes only
-`/var/lib/verktyg`. Check it with:
+`verktyg` reads `/opt/verktyg` through its group and writes persistent state
+and output beneath `/var/lib/verktyg`. Check it with:
 
 ```sh
 id verktyg

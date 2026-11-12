@@ -22,7 +22,8 @@ ExecStart=/opt/verktyg/.venv/bin/gunicorn \
 
 # --- Security ---
 # Root owns the code and venv; verktyg can only read them. Tool state and
-# output live in /var/lib/verktyg, the only writable path (StateDirectory).
+# output live beneath /var/lib/verktyg, the only persistent writable directory
+# tree (StateDirectory). PrivateTmp provides separate temporary storage.
 StateDirectory=verktyg
 StateDirectoryMode=0750
 NoNewPrivileges=true
