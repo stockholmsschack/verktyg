@@ -41,41 +41,7 @@ playtime.stockholmsschack.se {
 }
 
 http://localhost, http://127.0.0.1 {
-    handle_path /.well-known/mercure* {
-        mercure {
-		publisher_jwt !ChangeThisMercureHubJWTSecretKey!
-		subscriber_jwt !ChangeThisMercureHubJWTSecretKey!
-		anonymous
-		cors_origins *
-        }
-    }
-}
-
-verktyg.stockholmsschack.se {
-	# Browsers subscribe here; the portal publishes through localhost:6002.
-	handle /.well-known/mercure* {
-		mercure {
-			publisher_jwt !ChangeThisMercureHubJWTSecretKey!
-			subscriber_jwt !ChangeThisMercureHubJWTSecretKey!
-			anonymous
-			cors_origins *
-		}
-	}
-
-	handle {
-		reverse_proxy 127.0.0.1:6001 {
-			transport http {
-				dial_timeout 2s
-			}
-		}
-	}
-}
-
-# Verktyg publishes generation progress here. Site blocks with the same
-# mercure settings share one hub, so updates reach verktyg's subscribers.
-# Kept apart from the localhost block above, which Playtime may use.
-http://localhost:6002 {
-	handle /.well-known/mercure* {
+	handle_path /.well-known/mercure* {
 		mercure {
 			publisher_jwt !ChangeThisMercureHubJWTSecretKey!
 			subscriber_jwt !ChangeThisMercureHubJWTSecretKey!
@@ -86,8 +52,39 @@ http://localhost:6002 {
 }
 
 verkstad.stockholmsschack.se {
-	root * /var/www/verkstad.stockholmsschack.se
-	file_server
+    log {
+        output stderr
+        format console
+    }
+	@favicon path /favicon.ico
+	handle @favicon {
+		root * /opt/playtime-verkstad/src/web/static
+		file_server
+	}
+	handle_path /ShowTournament/* {
+		root * /opt/playtime-verkstad/public
+		file_server
+	}
+	handle_path /static/* {
+		root * /opt/playtime-verkstad/src/web/static
+		file_server
+	}
+	handle {
+		reverse_proxy 127.0.0.1:1613 {
+			transport http {
+				dial_timeout 2s
+			}
+		}
+	}
+
+	mercure {
+		publisher_jwt !ChangeThisMercureHubJWTSecretKey-different-secret
+		subscriber_jwt !ChangeThisMercureHubJWTSecretKey-different-secret
+		anonymous
+		cors_origins *
+		# if prod uses a bolt transport, give this one its own file:
+		# transport bolt { path /var/lib/caddy/mercure-verkstad.db }
+	}
 }
 
 www.movingredbus.net {
@@ -96,11 +93,6 @@ www.movingredbus.net {
 
 movingredbus.net {
 	root * /var/www/movingredbus.net
-	file_server
-}
-
-ragam.se {
-	root * /var/www/ragam.se
 	file_server
 }
 
