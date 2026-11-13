@@ -51,6 +51,10 @@ if ! id "${APP_NAME}" &>/dev/null; then
         "${APP_NAME}"
 fi
 
+# Caddy serves static files directly, as it does for Playtime and Verkstad.
+sudo usermod -aG "${APP_NAME}" caddy
+# Restart Caddy after installing its configuration to pick up group membership.
+
 # --- Directory structure ---
 # Root owns the code and venv; the verktyg group can read and execute them.
 sudo install -d -o root -g "${APP_NAME}" -m 750 "${APP_DIR}"

@@ -52,6 +52,26 @@ http://localhost, http://127.0.0.1 {
 }
 
 verktyg.stockholmsschack.se {
+	handle_path /static/* {
+		root * /opt/verktyg/src/verktyg/static
+		file_server
+	}
+
+	handle_path /tools/jgp/static/* {
+		root * /opt/verktyg/tools/jgp/jgp_standings/web/static
+		file_server
+	}
+
+	handle_path /tools/flickornas/static/* {
+		root * /opt/verktyg/tools/flickornas/flickornas_standings/web/static
+		file_server
+	}
+
+	handle_path /tools/senior/static/* {
+		root * /opt/verktyg/tools/senior/senior_gp/web/static
+		file_server
+	}
+
 	# Browsers subscribe here; the portal publishes through localhost:6002.
 	handle /.well-known/mercure* {
 		mercure {

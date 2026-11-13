@@ -64,7 +64,7 @@ under `/opt/verktyg`. The service also has private temporary storage through
 1. Clone the repository into your home directory:
 
    ```sh
-   git clone git@github.com:bganesh/verktyg.git ~/verktyg
+   git clone git@github.com:stockholmsschack/verktyg.git ~/verktyg
    ```
 
 2. Run the setup script:
@@ -120,8 +120,10 @@ getent passwd verktyg
 two Verktyg blocks. Compare it with the live configuration before installing;
 the repository cannot establish whether other sites have changed on the VPS.
 
-- `verktyg.stockholmsschack.se` proxies to Gunicorn and serves the Mercure hub
-  at `/.well-known/mercure`, where browsers subscribe to generation progress.
+- `verktyg.stockholmsschack.se` serves `/static/*` and each tool's
+  `/tools/<tool>/static/*` directly from `/opt/verktyg`, proxies application
+  requests to Gunicorn, and serves the Mercure hub at `/.well-known/mercure`,
+  where browsers subscribe to generation progress.
 - `http://localhost:6002` is where the portal publishes. Only Verktyg uses it.
 
 Site blocks with the same Mercure settings share one hub, so updates published
@@ -139,10 +141,14 @@ sudo diff /etc/caddy/Caddyfile ~/verktyg/Caddyfile.vps
 sudo cp /etc/caddy/Caddyfile /etc/caddy/Caddyfile.bak
 sudo install -m 644 ~/verktyg/Caddyfile.vps /etc/caddy/Caddyfile
 sudo caddy validate --config /etc/caddy/Caddyfile
-sudo systemctl reload caddy
+sudo systemctl restart caddy
 ```
 
-If validation fails, restore `Caddyfile.bak` before reloading.
+The setup script adds `caddy` to the `verktyg` group so it can read static
+files. Restart Caddy after this membership changes; a reload does not pick up
+the new group. Later configuration-only updates can use `systemctl reload caddy`.
+
+If validation fails, restore `Caddyfile.bak` before restarting.
 Use the same Mercure-enabled Caddy executable that the running service uses;
 the standard binary cannot validate the `mercure` directive. Confirm port
 6002 is reachable only locally, using the listener addresses and VPS firewall.
