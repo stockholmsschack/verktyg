@@ -105,3 +105,19 @@ class TestAMalformedRowIsRefused:
 def test_invalid_tournament_ids_are_refused(ids, message):
     with pytest.raises(ValueError, match=message):
         serialize_standings_json({}, tournament_ids=ids)
+
+
+@pytest.mark.parametrize("separators, expected", [
+    ({}, None),
+    ({"2013": ()}, None),
+    ({"2013": (8, 16), "2014": ()}, {"2013": [8, 16]}),
+])
+def test_optional_separators_omit_empty_groups(separators, expected):
+    snapshot = json.loads(serialize_standings_json(
+        {"2013": [_row()]}, tournament_ids=[6544, 6540], finals_separators=separators,
+    ))
+
+    if expected is None:
+        assert "finals_separators" not in snapshot
+    else:
+        assert snapshot["finals_separators"] == expected

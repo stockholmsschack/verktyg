@@ -240,6 +240,11 @@ tournaments not played) and `total_points`. Consumers of the earlier payload mus
 bands under `standings`. `output/public-standings.json` is a symlink to the latest successful run's
 JSON: the public snapshot.
 
+When separators are configured, the payload includes a top-level `finals_separators` object,
+for example `"finals_separators": {"2013": [8, 16]}`. Each number means a separator after that
+1-based row in the named age band, matching the PDF. Empty groups are omitted; when no groups
+have separators, the entire field is omitted. Changes appear after regeneration.
+
 The rating-list date, effective year and tournament ids the run used are recorded in
 `state/run_input.json` and replayed by later runs over the same tournaments; a run over a different
 list resolves them afresh and replaces the record. The run directory, the run record and the snapshot
