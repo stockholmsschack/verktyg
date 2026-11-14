@@ -247,3 +247,24 @@ class TestTheSeparatorsTab:
         assert '"finals.all_groups_clear"' in source
         assert '"finals.all_clear"' in source
         assert '"finals.already_clear"' in source
+
+
+def test_generated_json_reflects_configured_then_cleared_separators(offline_run):
+    import json
+
+    configuration = replace(
+        load_configuration(ROOT / "state"),
+        finals_separators={"2010-2012": (1, 3), "2013": (2,)},
+    )
+    for separators in (configuration.finals_separators, {}):
+        result = run_generation(
+            replace(configuration, finals_separators=separators),
+            fetch=REPLAY,
+            run_record_path=offline_run / "run_input.json",
+            today=TODAY,
+        )
+        snapshot = json.loads(result.artifacts.standings_json)
+        if separators:
+            assert snapshot["finals_separators"] == {"2010-2012": [1, 3], "2013": [2]}
+        else:
+            assert "finals_separators" not in snapshot

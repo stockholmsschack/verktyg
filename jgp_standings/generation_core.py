@@ -319,6 +319,7 @@ def produce_artifacts(
         standings_json=serialize_standings_json(
             _public_standings_rows(standings, published),
             tournament_ids=[t.tournament_id for t in _standings_tournaments(standings.tournaments)],
+            finals_separators=finals_separators,
         ),
         diagnostic_reports=diagnostic_reports(standings.diagnostics),
     )
@@ -365,6 +366,7 @@ def _standings_tournaments(tournaments: Sequence[TournamentEntries]) -> list[Tou
 
 def serialize_standings_json(
     bands: Mapping[str, Iterable[Mapping[str, Any]]], *, tournament_ids: Sequence[int],
+    finals_separators: Mapping[str, Sequence[int]] = MappingProxyType({}),
 ) -> str:
     """
     Serialize ordered tournament ids and age-band standings with member ids.
@@ -379,14 +381,15 @@ def serialize_standings_json(
         raise ValueError("tournament_ids must contain positive integers")
     if len(set(tournament_ids)) != len(tournament_ids):
         raise ValueError("tournament_ids must be unique")
-    return json.dumps(
-        {
-            "last_updated": datetime.now(UTC).isoformat(timespec="seconds"),
-            "tournament_ids": list(tournament_ids),
-            "standings": validated_bands,
-        },
-        ensure_ascii=False, indent=2,
-    ) + "\n"
+    payload = {
+        "last_updated": datetime.now(UTC).isoformat(timespec="seconds"),
+        "tournament_ids": list(tournament_ids),
+        "standings": validated_bands,
+    }
+    separators = {label: list(rows) for label, rows in finals_separators.items() if rows}
+    if separators:
+        payload["finals_separators"] = separators
+    return json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
 
 
 def _validated_public_row(label: str, index: int, row: Mapping[str, Any]) -> dict[str, Any]:
