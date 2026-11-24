@@ -4,6 +4,7 @@ The sign-in follows Playtime's `web.auth` module; see _docs/authentication.md.
 """
 
 import ipaddress
+import json
 import secrets
 from urllib.parse import urlsplit
 
@@ -212,7 +213,7 @@ def logout():
 def check_user_in_group(credentials, user_email, group_email):
     """Return True if user_email is a (direct or transitive) member of group_email.
 
-    Copied from Playtime; it runs with the signed-in user's own credentials.
+    The check runs with the signed-in user's credentials.
     """
     try:
         svc = build("cloudidentity", "v1", credentials=credentials)
@@ -223,14 +224,13 @@ def check_user_in_group(credentials, user_email, group_email):
         response = (
             svc.groups()
             .memberships()
-            .searchTransitiveGroups(
-                parent="groups/-",
-                query=f"member_key_id == '{user_email}' && group == '{group_name}'",
-                pageSize=1,
+            .checkTransitiveMembership(
+                parent=group_name,
+                query=f"member_key_id == {json.dumps(user_email)}",
             )
             .execute()
         )
-        return len(response.get("memberships", [])) > 0
+        return response.get("hasMembership") is True
     except Exception as e:  # noqa: BLE001 - Playtime treats any failure as no membership
         current_app.logger.error("check_user_in_group error: %s", e)
         return False

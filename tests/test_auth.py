@@ -288,7 +288,13 @@ def test_public_routes_need_no_session(app):
     assert client.post("/tools/jgp/api/v1/configuration/rules").status_code == 401
 
 
-def test_check_user_in_group_searches_transitive_membership(app, monkeypatch):
+@pytest.mark.parametrize(
+    "response, expected",
+    [({"hasMembership": True}, True), ({"hasMembership": False}, False), ({}, False)],
+)
+def test_check_user_in_group_checks_transitive_membership(
+    app, monkeypatch, response, expected
+):
     calls = {}
 
     class Groups:
@@ -299,9 +305,9 @@ def test_check_user_in_group_searches_transitive_membership(app, monkeypatch):
         def memberships(self):
             return self
 
-        def searchTransitiveGroups(self, **kwargs):
-            calls["search"] = kwargs
-            return SimpleNamespace(execute=lambda: {"memberships": [{}]})
+        def checkTransitiveMembership(self, **kwargs):
+            calls["check"] = kwargs
+            return SimpleNamespace(execute=lambda: response)
 
     def build(service, version, credentials):
         assert (service, version, credentials) == ("cloudidentity", "v1", CREDENTIALS)
@@ -309,12 +315,14 @@ def test_check_user_in_group_searches_transitive_membership(app, monkeypatch):
 
     monkeypatch.setattr(auth, "build", build)
     with app.app_context():
-        assert auth.check_user_in_group(CREDENTIALS, "a@example.com", "uu@example.com")
+        assert (
+            auth.check_user_in_group(CREDENTIALS, "a@example.com", "uu@example.com")
+            is expected
+        )
     assert calls["lookup"] == "uu@example.com"
-    assert calls["search"] == {
-        "parent": "groups/-",
-        "query": "member_key_id == 'a@example.com' && group == 'groups/uu'",
-        "pageSize": 1,
+    assert calls["check"] == {
+        "parent": "groups/uu",
+        "query": 'member_key_id == "a@example.com"',
     }
 
 
